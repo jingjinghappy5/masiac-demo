@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>demo1</title>
+	<meta charset="utf-8">
+	<meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="msapplication-tap-highlight" content="no" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div class="main">
+		<canvas class="masiac" id="canvas"></canvas>
+	</div>
+
+	<script>
+	window.onload = function () {
+		var img = new Image();
+		img.src = 'imgs/cat.jpg';
+		var w;
+		var h;
+
+		var cvs = document.getElementById('canvas');
+		var ctx = cvs.getContext('2d');
+
+		var initialSize = function () {
+			w = img.width;
+			h = img.height;
+			cvs.width = w;
+			cvs.height = h;
+		};
+
+		var showCat = function () {
+			initialSize();
+			ctx.drawImage(img, 0, 0, w, h);
+		};
+
+		var reverseColor = function () {
+			var imageData = ctx.getImageData(0, 0, w, h);
+			for (var i = 0, l = imageData.data.length; i < l; i += 4) {
+				imageData.data[i + 0] = 255 - imageData.data[i];
+				imageData.data[i + 1] = 255 - imageData.data[i + 1];
+				imageData.data[i + 2] = 255 - imageData.data[i + 2];
+				imageData.data[i + 3] = 255;
+			}
+			ctx.putImageData(imageData, 0, 0);
+		}
+
+		var imgOnload = function () {
+			showCat();
+			reverseColor();
+		}
+
+		if (img.complete) {
+			imgOnload();
+		}
+		else {
+			img.addEventListener('load', function () {
+				imgOnload();
+			});
+		}
+
+	};
+	</script>
+</body>
+</html>

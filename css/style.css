@@ -1,0 +1,26 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+body {
+
+}
+.main {
+	text-align: center;
+	margin-top: 40px;
+}
+canvas {
+	border: 1px solid #ccc;
+}
+.demo3 canvas{
+	background: url(../imgs/cat.jpg) no-repeat;
+	background-size: 100%;
+}
+.btn {
+	display: block;
+	width: 100px;
+	height: 30px;
+	line-height: 1;
+	text-align: center;
+	margin: 0 auto;
+}

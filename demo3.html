@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>demo3</title>
+	<meta charset="utf-8">
+	<meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="msapplication-tap-highlight" content="no" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div class="main demo3">
+		<canvas class="masiac" id="canvas"></canvas>
+	</div>
+
+	<script>
+	window.onload = function () {
+		var img = new Image();
+		img.src = 'imgs/cat.jpg';
+		var w;
+		var h;
+
+		var cvs = document.getElementById('canvas');
+		var ctx = cvs.getContext('2d');
+
+		var initialSize = function () {
+			w = img.width;
+			h = img.height;
+			cvs.width = w;
+			cvs.height = h;
+		};
+
+		var showCat = function () {
+			initialSize();
+			ctx.drawImage(img, 0, 0, w, h);
+		};
+
+		var drawOneMasiac = function (data, x, y, width, height, color) {
+            for (var i = 0; i < width; i ++) {
+            	for (var j = 0; j < height; j ++) {
+            		var index = ((y + j) * w + (i + x)) * 4;
+            		data[index + 0] = color.r;
+	                data[index + 1] = color.g;
+	                data[index + 2] = color.b;
+                	data[index + 3] = color.a;
+            	}
+            }
+        };
+
+		var masiac = function (ctx, w, h, size) {
+            if (!ctx) {
+                return;
+            }
+
+            var imageData = ctx.getImageData(0, 0, w, h);
+            var size = size || 16;
+            var rows = w / size;
+            var cols = h / size;
+            var color = {};
+
+            for (var row = 0; row < rows; row ++) {
+                var y = row * size;
+                var pY = Math.max(Math.min(y, h - 1), 0);
+                for (var col = 0; col < cols; col ++) {
+                    var x = col * size;
+                    var pX = Math.max(Math.min(x, w - 1), 0);
+                    var i = (pX + pY * w) * 4;
+                    color.r = imageData.data[i + 0];
+                    color.g = imageData.data[i + 1];
+                    color.b = imageData.data[i + 2];
+                    color.a = imageData.data[i + 3];
+                    ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + (color.a / 255) + ')';
+                    ctx.fillRect(x, y, size, size);
+                    // drawOneMasiac(imageData.data, x, y, size, size, color);
+                }
+            }
+            // ctx.putImageData(imageData, 0, 0);
+        };
+		
+		var imgOnload = function () {
+			showCat();
+			var grid = 0;
+			masiac(ctx, w, h, grid);
+		}
+
+		if (img.complete) {
+			imgOnload();
+		}
+		else {
+			img.addEventListener('load', function () {
+				imgOnload();
+			});
+		}
+
+	};
+	</script>
+</body>
+</html>

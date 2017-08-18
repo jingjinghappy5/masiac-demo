@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>demo2</title>
+	<meta charset="utf-8">
+	<meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="msapplication-tap-highlight" content="no" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div class="main">
+		<canvas class="masiac" id="canvas"></canvas>
+	</div>
+
+	<script>
+	window.onload = function () {
+		var img = new Image();
+		img.src = 'imgs/cat.jpg';
+		var w;
+		var h;
+
+		var cvs = document.getElementById('canvas');
+		var ctx = cvs.getContext('2d');
+
+		var initialSize = function () {
+			w = img.width;
+			h = img.height;
+			cvs.width = w;
+			cvs.height = h;
+		};
+
+		var showCat = function () {
+			initialSize();
+			ctx.drawImage(img, 0, 0, w, h);
+		};
+
+
+		var drawOneMasiac = function (data, x, y, width, height, color) {
+            for (var i = 0; i < width; i ++) {
+            	for (var j = 0; j < height; j ++) {
+            		var index = ((y + j) * w + (i + x)) * 4;
+            		data[index + 0] = color;
+	                data[index + 1] = color;
+	                data[index + 2] = color;
+                	data[index + 3] = color;
+            	}
+            }
+        };
+
+		var masiac = function (ctx, w, h, size) {
+            if (!ctx) {
+            	return;
+            }
+
+            var imageData = ctx.getImageData(0, 0, w, h);
+            var size = size || 16;
+            var rows = w / size;
+            var cols = h / size;
+            var color = {};
+
+            for (var row = 0; row < rows; row ++) {
+                var y = row * size;
+                for (var col = 0; col < cols; col ++) {
+                    var x = col * size;
+                    var color = Math.round(Math.random() * 255);
+                    drawOneMasiac(imageData.data, x, y, size, size, color);
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+		var imgOnload = function () {
+			showCat();
+			var grid = 10;
+			masiac(ctx, w, h, grid, grid);
+		}
+
+		if (img.complete) {
+			imgOnload();
+		}
+		else {
+			img.addEventListener('load', function () {
+				imgOnload();
+			});
+		}
+
+	};
+	</script>
+</body>
+</html>
